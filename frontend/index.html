@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="he">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>אפליקציית תרגום</title>
+</head>
+<body>
+<h1>אפליקציית תרגום</h1>
+<textarea id="source" rows="4" cols="40" placeholder="הקלד טקסט לתרגום..."></textarea><br>
+<select id="target">
+<option value="en">English</option>
+<option value="he">עברית</option>
+<option value="fr">Français</option>
+<option value="es">Español</option>
+</select>
+<button id="translateBtn">תרגם</button>
+<h3>תוצאה:</h3>
+<div id="result" style="border:1px solid #ccc; padding:10px; min-height:40px;"></div>
+
+
+<h3>היסטוריית תרגומים</h3>
+<ul id="history"></ul>
+
+
+<script src="script.js"></script>
+</body>
+</html>
