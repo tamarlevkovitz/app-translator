@@ -16,6 +16,6 @@ spec:
     spec:
       containers:
       - name: backend
-        image: tamilevkovitz/image-backend:latest
+        image: image-backend
         ports:
         - containerPort: 3001
