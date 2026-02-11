@@ -17,8 +17,15 @@ spec:
       containers:
       - name: backend
         image: tamilevkovitz/image-backend
+        imagePullPolicy: Always
         ports:
         - containerPort: 3001
+        env:
+        - name: DATABASE_URL
+          value: "postgres://postgres:postgres@postgres-service:5432/translations"
+        - name: TRANSLATOR_HOST
+          value: "translator-service"
+
 ---
 apiVersion: v1
 kind: Service

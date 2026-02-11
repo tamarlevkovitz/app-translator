@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: init.sql-config
+  name: init-sql-config
 data:
   init.sql: |
     CREATE TABLE IF NOT EXISTS translations (
@@ -90,7 +90,7 @@ kind: Service
 metadata:
   name: postgres-service
 spec:
-  clusterIP: none
+  clusterIP: None
   selector:
     app: postgres
   ports:
