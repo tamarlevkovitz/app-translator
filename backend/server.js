@@ -13,12 +13,12 @@ app.use(cors());
 const pool = new Pool({
 connectionString: process.env.DATABASE_URL || 'postgres://postgres:postgres@db:5432/translations'
 });
-
+const translatorHost = process.env.TRANSLATOR_HOST || 'translator';
 
 // פונקציית תרגום אמיתית דרך LibreTranslate API
 async function translateText(text, target) {
 try {
-const res = await fetch('http://translator:5000/translate', {
+const res = await fetch(`http://${process.env.TRANSLATOR_HOST || 'translator'}:5000/translate`, {
 method: 'POST',
 headers: { 'Content-Type': 'application/json' },
 body: JSON.stringify({ q: text, source: 'auto', target, format: 'text' })
