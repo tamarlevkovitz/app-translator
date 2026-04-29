@@ -1,0 +1,36 @@
+name: ci-backend
+on:
+ push:
+   branches: [ci-cd, main]
+   paths:
+     - './backend'
+     - '.github/workflows/ci-backend.yaml'
+ pull_request:
+   branches: [main, ci-cd]
+   paths:
+     - './backend'
+     - '.github/workflows/ci-backend.yaml'
+jobs:
+ unit-tests:
+   name: run unit-test
+   runs-on: ubuntu-latest
+   steps:
+     - uses: actions/checkout@v4
+    
+     - name: Setup Node.js
+       uses: actions/setup-node@v4
+       with:
+         node-version: '18'
+    
+     - name: Install dependencies
+       working-directory: ./backend
+       run: npm install
+    
+     - name: Run unit tests
+       working-directory: ./backend
+       run: npm test
+    
+    
+     - name: Test summary
+       run: echo "Hi I'm  backend pipline nice to meet you"
+
