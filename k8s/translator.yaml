@@ -15,6 +15,7 @@ spec:
       containers:
       - name: translator
         image: libretranslate/libretranslate:latest
+        imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 5000
 ---
