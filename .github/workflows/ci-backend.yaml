@@ -16,7 +16,7 @@ jobs:
    runs-on: ubuntu-latest
    steps:
      - uses: actions/checkout@v4
-    
+
      - name: Setup Node.js
        uses: actions/setup-node@v4
        with:
@@ -30,7 +30,7 @@ jobs:
        working-directory: ./backend
        run: npm test
     
-    
+
      - name: Test summary
        run: echo "Hi I'm  backend pipline nice to meet you"
        
@@ -71,17 +71,17 @@ jobs:
     
      - name: Run tests with Docker Compose
        run: |
-        docker compose -f docker-compose.test.yml up \
+        docker compose -f docker-compose.test.yaml up \
           --abort-on-container-exit \
           --exit-code-from backend-test
     
      - name: Show logs
        if: always()
-       run: docker compose -f docker-compose.test.yml logs
+       run: docker compose -f docker-compose.test.yaml logs
     
      - name: Cleanup
        if: always()
-       run: docker compose -f docker-compose.test.yml down -v
+       run: docker compose -f docker-compose.test.yaml down -v
   publish:
     name: Push to DockerHub
     runs-on: ubuntu-latest
