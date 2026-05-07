@@ -2,8 +2,8 @@ services:
   backend-test:
     build: ./backend
     volumes:
-      - ./integration.test.js:/backend/integration.test.js
-    command: sh -c "sleep 5 && node --test /backend/integration.test.js"
+      - ./integration.test.mjs:/backend/integration.test.mjs
+    command: sh -c "sleep 5 && node --test /backend/integration.test.mjs"
     environment:
       DATABASE_URL: postgres://postgres:postgres@db-test:5432/translations_test
     working_dir: /backend

@@ -6,14 +6,14 @@ on:
       - './backend/**'
       - '.github/workflows/ci-backend.yaml'
       - 'docker-compose.test.yml' 
-      - 'integration.test.js'
+      - 'integration.test.mjs'
  pull_request:
    branches: [main, ci-cd]
    paths:
       - './backend/**'
       - '.github/workflows/ci-backend.yaml'
       - 'docker-compose.test.yml'   
-      - 'integration.test.js'
+      - 'integration.test.mjs'
 jobs:
   unit-tests:
    name: run unit-test
