@@ -1,55 +1,48 @@
-# Global Settings
-global:
-  domain: translator.local
-
-# Frontend
-frontend:
-  replicaCount: 2
-  image: tamilevkovitz/frontend
-  imagePullPolicy: Never
-  service:
-    name: frontend-service
-    port: 80
-
-# Backend
 backend:
-  replicaCount: 2
   image: tamilevkovitz/image-backend
-  imagePullPolicy: Never
-  service:
-    name: backend-service
-    port: 3001
-  env:
-    databaseUrl: "postgres://postgres:postgres@postgres-service:5432/translations"
-    translatorHost: "translator-service"
+  replicaCount: 2
+  port: 3001
+  
+  
+frontend:
+  image: tamilevkovitz/frontend
+  replicaCount: 2
+  port: 80
 
-# Database (PostgreSQL)
-database:
-  replicaCount: 1
-  image: postgres:15-alpine
-  imagePullPolicy: Never
-  auth:
-    postgresDb: "translations"
-    postgresUser: "postgres"
-    postgresPassword: "postgres" # Helm יהפוך את זה ל-base64 בעצמו ב-Template
-  persistence:
-    size: 10Gi
-  service:
-    name: postgres-service
-    port: 5432
-
-# Translator (LibreTranslate)
 translator:
-  replicaCount: 1
   image: libretranslate/libretranslate:latest
-  imagePullPolicy: IfNotPresent
-  service:
-    name: translator-service
-    port: 5000
+  replicaCount: 1
+  port: 5000
+  resources:
+    requests:
+      memory: "1Gi"
+      cpu: "500m"
+    limits:
+      memory: "4Gi"
+      cpu: "2000m"
 
-# Ingress
+
+database:
+  name: translations
+  user: postgres
+  password: cG9zdGdyZXM=
+  storage: 10Gi
+  replicas: 1
+  image: postgres:15-alpine
+  
 ingress:
   enabled: true
-  name: app-translator-ingress
-  annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: "/$2"
+  host: translator.local
+  spec:
+    port: 3001 
+
+volume:
+  data:
+  init.sql: |
+    CREATE TABLE IF NOT EXISTS translations (
+      id SERIAL PRIMARY KEY,
+      source_text TEXT NOT NULL,
+      target_lang VARCHAR(10) NOT NULL,
+      translated_text TEXT NOT NULL,
+      created_at TIMESTAMP DEFAULT now()
+    );

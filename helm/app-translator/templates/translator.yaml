@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: translator
 spec:
-  replicas: {{ .Values.translator.replicaCount }}
+  replicas: {{ .Values.translator.replicas }}
   selector:
     matchLabels:
       app: translator
@@ -15,17 +15,23 @@ spec:
       containers:
       - name: translator
         image: {{ .Values.translator.image }}
-        imagePullPolicy: {{ .Values.translator.imagePullPolicy }}
         ports:
-        - containerPort: 5000
+        - containerPort: {{ .Values.translator.port }}
+        resources:
+          requests:
+            memory: {{ .Values.translator.resources.requests.memory | quote }}
+            cpu: {{ .Values.translator.resources.requests.cpu | quote }}
+          limits:
+            memory: {{ .Values.translator.resources.limits.memory | quote }}
+            cpu: {{ .Values.translator.resources.limits.cpu | quote }}
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ .Values.translator.service.name }}
+  name: translator-service
 spec:
   selector:
     app: translator
   ports:
-  - port: {{ .Values.translator.service.port }}
-    targetPort: 5000
+  - port: {{ .Values.translator.port }}
+    targetPort: {{ .Values.translator.port }}

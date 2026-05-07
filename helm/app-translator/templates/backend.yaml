@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: backend
 spec:
-  replicas: {{ .Values.backend.replicaCount }}
+  replicas: {{ .Values.backend.replicas }}
   selector:
     matchLabels:
       app: backend
@@ -15,24 +15,38 @@ spec:
       containers:
       - name: backend
         image: {{ .Values.backend.image }}
-        imagePullPolicy: {{ .Values.backend.imagePullPolicy }}
+        imagePullPolicy: Always
         ports:
-        - containerPort: 3001
+        - containerPort: {{ .Values.backend.port }}
         env:
         - name: DATABASE_URL
-          value: {{ .Values.backend.env.databaseUrl | quote }}
+          value: "postgres://{{ .Values.database.user }}:{{ .Values.database.password }}@postgres-service:5432/{{ .Values.database.name }}"
         - name: TRANSLATOR_HOST
-          value: {{ .Values.backend.env.translatorHost | quote }}
+          value: "translator-service"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: {{ .Values.backend.port }}
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: {{ .Values.backend.port }}
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 3
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ .Values.backend.service.name }}
+  name: backend-service
 spec:
   selector:
     app: backend
-  type: ClusterIP
   ports:
-    - protocol: TCP 
-      port: {{ .Values.backend.service.port }}
-      targetPort: 3001
+  - port: {{ .Values.backend.port }}
+    targetPort: {{ .Values.backend.port }}
