@@ -1,28 +1,46 @@
 <!DOCTYPE html>
-<html lang="he">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>אפליקציית תרגום</title>
+<html lang="he" dir="rtl"> <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>מערכת תרגום מקצועית</title>
+    <style>
+        body { font-family: sans-serif; max-width: 600px; margin: 20px auto; padding: 20px; line-height: 1.6; background-color: #f4f4f9; }
+        textarea { width: 100%; padding: 10px; border-radius: 5px; border: 1px solid #ddd; box-sizing: border-box; }
+        select, button { padding: 10px; margin-top: 10px; cursor: pointer; border-radius: 5px; border: 1px solid #ddd; }
+        button { background-color: #007bff; color: white; border: none; font-weight: bold; }
+        button:hover { background-color: #0056b3; }
+        #result { background: white; border: 1px solid #ddd; padding: 15px; min-height: 50px; margin-top: 10px; border-radius: 5px; }
+        .history-section { margin-top: 30px; border-top: 2px solid #eee; padding-top: 20px; }
+        ul { list-style: none; padding: 0; }
+        li { background: #fff; margin-bottom: 5px; padding: 10px; border-radius: 3px; border-right: 4px solid #007bff; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+    </style>
 </head>
 <body>
-<h1>אפליקציית תרגום</h1>
-<textarea id="source" rows="4" cols="40" placeholder="הקלד טקסט לתרגום..."></textarea><br>
-<select id="target">
-<option value="en">English</option>
-<option value="he">עברית</option>
-<option value="fr">Français</option>
-<option value="es">Español</option>
-</select>
-<button id="translateBtn">תרגם</button>
-<h3>תוצאה:</h3>
-<div id="result" style="border:1px solid #ccc; padding:10px; min-height:40px;"></div>
+    <h1>אפליקציית תרגום ב-Kubernetes</h1>
+    
+    <label for="source">טקסט לתרגום:</label>
+    <textarea id="source" rows="4" placeholder="הקלד טקסט לתרגום..."></textarea>
+    
+    <div>
+        <label for="target">שפת יעד:</label>
+        <select id="target">
+            <option value="en">English (אנגלית)</option>
+            <option value="he">עברית</option>
+            <option value="fr">Français (צרפתית)</option>
+            <option value="es">Español (ספרדית)</option>
+        </select>
+        
+        <button id="translateBtn">תרגם עכשיו</button>
+    </div>
 
+    <h3>תוצאה:</h3>
+    <div id="result">התרגום יופיע כאן...</div>
 
-<h3>היסטוריית תרגומים</h3>
-<ul id="history"></ul>
+    <div class="history-section">
+        <h3>היסטוריית תרגומים אחרונים</h3>
+        <ul id="history"></ul>
+    </div>
 
-
-<script src="script.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
