@@ -14,10 +14,15 @@ on:
       - '.github/workflows/ci-backend.yaml'
       - 'docker-compose.test.yml'   
       - 'integration.test.mjs'
+
 permissions:
   contents: write
   packages: write
   id-token: write
+
+env:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+
 jobs:
   unit-tests:
    name: run unit-test
@@ -57,12 +62,12 @@ jobs:
         with:
           context: ./backend
           push: false
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/app-translator-backend:${{ github.sha }}
+          tags: ${{ env.DOCKERHUB_USERNAME }}/app-translator-backend:${{ github.sha }}
           load: true
       
       - name: Test Docker image
         run: |
-          docker run --rm ${{ secrets.DOCKERHUB_USERNAME }}/app-translator-backend:${{ github.sha }} node --version
+          docker run --rm ${{ env.DOCKERHUB_USERNAME }}/app-translator-backend:${{ github.sha }} node --version
           echo "✅ Docker image works!"
 
   integration-tests:
@@ -110,7 +115,7 @@ jobs:
       - name: Login to DockerHub
         uses: docker/login-action@v3
         with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          username: ${{ env.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       
       - name: Build and push
@@ -119,8 +124,8 @@ jobs:
           context: ./backend
           push: true
           tags: |
-            ${{ secrets.DOCKERHUB_USERNAME }}/app-translator-backend:latest
-            ${{ secrets.DOCKERHUB_USERNAME }}/app-translator-backend:${{ github.sha }}
+            ${{ env.DOCKERHUB_USERNAME }}/app-translator-backend:latest
+            ${{ env.DOCKERHUB_USERNAME }}/app-translator-backend:${{ github.sha }}
   tagging:
     name: Create Git Tag
     runs-on: ubuntu-latest
