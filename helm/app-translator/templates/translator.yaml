@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: translator
 spec:
-  replicas: {{ .Values.translator.replicas }}
+  replicas: {{ .Values.translator.replicaCount }}
   selector:
     matchLabels:
       app: translator
@@ -18,12 +18,7 @@ spec:
         ports:
         - containerPort: {{ .Values.translator.port }}
         resources:
-          requests:
-            memory: {{ .Values.translator.resources.requests.memory | quote }}
-            cpu: {{ .Values.translator.resources.requests.cpu | quote }}
-          limits:
-            memory: {{ .Values.translator.resources.limits.memory | quote }}
-            cpu: {{ .Values.translator.resources.limits.cpu | quote }}
+          {{- toYaml .Values.translator.resources | nindent 10 }}
 ---
 apiVersion: v1
 kind: Service

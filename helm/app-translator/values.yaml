@@ -1,8 +1,13 @@
+global:
+  domain: translator.local
+
 backend:
   image: tamilevkovitz/image-backend
   replicaCount: 2
   port: 3001
-  
+  env:
+    databaseUrl: "postgres://postgres:postgres@postgres-service:5432/translations"
+    translatorHost: "translator-service"
   
 frontend:
   image: tamilevkovitz/frontend
@@ -27,14 +32,13 @@ database:
   user: postgres
   password: cG9zdGdyZXM=
   storage: 10Gi
-  replicas: 1
+  replicaCount: 1
   image: postgres:15-alpine
   
 ingress:
   enabled: true
   host: translator.local
-  spec:
-    port: 3001 
+  
 
 volume:
   data:

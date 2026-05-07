@@ -6,31 +6,54 @@ const historyList = document.getElementById('history');
 
 
 btn.addEventListener('click', async () => {
-const text = source.value.trim();
-if (!text) return;
+    const text = source.value.trim();
+    const targetLang = target.value;
+
+    if (!text){
+        result.textContent = 'נא להזין טקסט לתרגום';
+        return; 
+    } 
 
 
-result.textContent = 'מתרגם...';
-try {
-const res = await fetch('/api/translate', {
-method: 'POST',
-headers: { 'Content-Type': 'application/json' },
-body: JSON.stringify({ text, target: target.value })
-});
-const data = await res.json();
-result.textContent = data.translatedText;
-loadHistory();
+    result.textContent = 'מתרגם...';
+    try {
+        const res = await fetch('/api/translate', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ text: text, to: targetLang })
+    });
+
+    if (!res.ok) throw new Error(`שרת התרגום החזיר שגיאה (${res.status})`);
+    const data = await res.json();
+    result.textContent = data.translatedText || 'לא התקבל תרגום';
+
+    loadHistory();
 } catch (err) {
-result.textContent = 'שגיאה: ' + err.message;
-}
+    console.error("Frontend Error:", err);
+    result.textContent = 'שגיאה: ' + err.message;
+    }
 });
 
 
 async function loadHistory() {
-const res = await fetch('/api/history');
-const data = await res.json();
-historyList.innerHTML = data.map(t => `<li>${t.source_text} → ${t.translated_text}</li>`).join('');
-}
+    try {
+        const res = await fetch('/api/history');
+        if (!res.ok) return;
+
+        const data = await res.json();
+        
+        if (data.length === 0) {
+            historyList.innerHTML = '<li>אין היסטוריית תרגומים</li>';
+            return;
+        }
+        
+        historyList.innerHTML = data
+            .map(t => `<li><strong>${t.source_text}</strong> → ${t.translated_text}</li>`)
+            .join('');
+    } catch (err) {
+        console.error("History Load Error:", err);
+    }
+}   
 
 
 loadHistory();

@@ -3,16 +3,17 @@ services:
     build: ./backend 
     environment:
       DATABASE_URL: postgres://postgres:postgres@db:5432/translations
+      TRANSLATOR_HOST: translator-service
     depends_on:
-      - translator
-      - db
+      - translator-service
+      - db-service
     networks:
       - backend_network
       - fronted_network
       - translator_network
 
 
-  db:
+  db-service:
     image: postgres:15-alpine
     environment:
       POSTGRES_DB: translations
@@ -20,7 +21,7 @@ services:
       POSTGRES_PASSWORD: postgres
     volumes:
       - db_data:/var/lib/postgresql/data  
-      - /db:/docker-entrypoint-initdb.d/
+      - ./db:/docker-entrypoint-initdb.d/
     networks:
       - backend_network
 
@@ -33,14 +34,14 @@ services:
     depends_on:
       - backend
 
-  translator:
+  translator-service:
     image: libretranslate/libretranslate
     ports:
       - "5000:5000"
     networks:
       - translator_network
     depends_on:
-      - db
+      - db-service
 
 volumes:
   db_data:
