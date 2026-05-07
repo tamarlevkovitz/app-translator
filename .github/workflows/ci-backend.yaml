@@ -49,12 +49,12 @@ jobs:
         with:
           context: ./backend
           push: false
-          tags: tamilevkovitz/app-translator-backend:${{ github.sha }}
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/app-translator-backend:${{ github.sha }}
           load: true
       
       - name: Test Docker image
         run: |
-          docker run --rm tamilevkovitz/app-translator-backend:${{ github.sha }} node --version
+          docker run --rm ${{ secrets.DOCKERHUB_USERNAME }}/app-translator-backend:${{ github.sha }} node --version
           echo "✅ Docker image works!"
 
   integration-tests:
@@ -121,7 +121,7 @@ jobs:
     if: |
       github.event_name == 'push' &&
       (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/ci-cd') &&
-      needs.push.result == 'success'
+      needs.publish.result == 'success'
     
     steps:
       - uses: actions/checkout@v4
