@@ -3,17 +3,21 @@ on:
  push:
    branches: [ci-cd, main]
    paths:
-      - './backend/**'
+      - 'backend/**'
       - '.github/workflows/ci-backend.yaml'
       - 'docker-compose.test.yml' 
       - 'integration.test.mjs'
  pull_request:
    branches: [main, ci-cd]
    paths:
-      - './backend/**'
+      - 'backend/**'
       - '.github/workflows/ci-backend.yaml'
       - 'docker-compose.test.yml'   
       - 'integration.test.mjs'
+permissions:
+  contents: write
+  packages: write
+  id-token: write
 jobs:
   unit-tests:
    name: run unit-test
