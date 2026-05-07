@@ -3,13 +3,17 @@ on:
  push:
    branches: [ci-cd, main]
    paths:
-     - './backend/**'
-     - '.github/workflows/ci-backend.yaml'
+      - './backend/**'
+      - '.github/workflows/ci-backend.yaml'
+      - 'docker-compose.test.yaml' 
+      - 'integration.test.js'
  pull_request:
    branches: [main, ci-cd]
    paths:
-     - './backend/**'
-     - '.github/workflows/ci-backend.yaml'
+      - './backend/**'
+      - '.github/workflows/ci-backend.yaml'
+      - 'docker-compose.test.yaml'   
+      - 'integration.test.js'
 jobs:
   unit-tests:
    name: run unit-test
