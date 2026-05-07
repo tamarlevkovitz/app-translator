@@ -33,7 +33,7 @@ metadata:
   name: backend-service
 spec:
   selector:
-    app.kubernetes.io/name: backend
+    app: backend
   type: ClusterIP
   ports:
     - protocol: TCP 
