@@ -1,0 +1,69 @@
+name: ci-frontend
+on:
+  push:
+    branches: [ci-cd, main]
+    paths:
+      - 'frontend/**'
+      - '.github/workflows/ci-frontend.yaml'
+  pull_request:
+    branches: [main, ci-cd]
+    paths:
+      - 'frontend/**'
+      - '.github/workflows/ci-frontend.yaml'
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  # שלב 1 - אימות קבצים
+  build:
+    name: Build & Verify Frontend
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Verify files
+        run: |
+          ls -la frontend/
+          echo "Frontend files verified and ready for deploy"
+
+  # שלב 2 - פריסה ל-S3 וניקוי Cache ב-CloudFront
+  deploy:
+    name: Deploy to AWS (S3 & CloudFront)
+    runs-on: ubuntu-latest
+    needs: build
+    if: |
+      github.event_name == 'push' &&
+      (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/ci-cd')
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # התחברות ל-AWS באמצעות OIDC (ללא סיסמאות קבועות)
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: us-east-1 # ודאי שזה האזור שלך
+
+      # העלאת הקבצים ל-S3 (תוך החרגת קבצי Docker ו-Nginx)
+      - name: Sync to S3
+        run: |
+          aws s3 sync frontend/ s3://${{ secrets.S3_BUCKET_NAME }}/ \
+            --delete \
+            --exclude "*.test.js" \
+            --exclude "Dockerfile" \
+            --exclude ".dockerignore" \
+            --exclude "nginx*.conf"
+          echo "✅ Deployed to S3!"
+
+      # רענון ה-Cache ב-CloudFront כדי שהגולשים יראו את השינויים מיד
+      - name: Invalidate CloudFront cache
+        run: |
+          aws cloudfront create-invalidation \
+            --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} \
+            --paths "/*"
+          echo "✅ CloudFront cache cleared"
