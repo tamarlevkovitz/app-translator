@@ -42,7 +42,10 @@ services:
       - translator_network
     depends_on:
       - db-service
-
+    environment:
+      - LT_UPDATE_MODELS=false      # 1. מונע ניסיון הורדה שנכשל
+      - PYTHONHTTPSVERIFY=0         # 2. מתעלם משגיאות SSL בגלל הסינון
+      - LT_LOAD_ONLY=en,he          # 3. טוען רק מה שצריך כדי לחסוך זמן
 volumes:
   db_data:
 
