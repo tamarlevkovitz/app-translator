@@ -127,12 +127,12 @@ jobs:
   deploy:
     name: Deploy to EC2
     runs-on: ubuntu-latest
-    needs: push
+    needs: publish
 
     if: |
       github.event_name == 'push' &&
       (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/ci/cd') &&
-      needs.push.result == 'success'
+      needs.publish.result == 'success'
 
     steps:
       - name: Deploy to EC2
