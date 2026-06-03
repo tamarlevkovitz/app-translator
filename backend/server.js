@@ -27,7 +27,7 @@ app.get('/health', (req, res) => {
 async function translateText(text, target) {
   try {
     // שימוש בשם השירות הנכון: translator-service
-    const host = process.env.TRANSLATOR_HOST || 'translator-service';
+    const host = 'translator-service.default.svc.cluster.local';
     const url = `http://${host}:5000/translate`;
     
     
