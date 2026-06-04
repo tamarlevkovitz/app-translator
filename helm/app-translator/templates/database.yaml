@@ -4,7 +4,7 @@ metadata:
   name: init-sql-config
 data:
   init.sql: |
-{{ .Values.volume["init.sql"] | indent 4 }}
+{{ .Values.volume.data.init.sql | indent 4 }}
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -42,7 +42,7 @@ spec:
       containers:
       - name: postgres
         image: {{ .Values.database.image }}
-        imagePullPolicy: Never
+        imagePullPolicy: Always
         ports:
         - containerPort: 5432
         env:

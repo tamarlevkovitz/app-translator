@@ -26,28 +26,32 @@ translator:
       memory: "4Gi"
       cpu: "2000m"
 
-
-database:
-  name: translations
-  user: postgres
-  password: cG9zdGdyZXM=
-  storage: 10Gi
-  replicaCount: 1
-  image: postgres:15-alpine
   
 ingress:
   enabled: true
   host: translator.local
   
-
-volume:
-  data:
-    init:
-      sql: |
-        CREATE TABLE IF NOT EXISTS translations (
-          id SERIAL PRIMARY KEY,
-          source_text TEXT NOT NULL,
-          target_lang VARCHAR(10) NOT NULL,
-          translated_text TEXT NOT NULL,
-          created_at TIMESTAMP DEFAULT now()
-        );
+postgresql:
+  auth:
+    existingSecret: "postgres-password"
+    secretKeys:
+      adminPasswordKey: "password"
+  
+  primary:
+    initdb:
+      scripts:
+        init.sql: |
+          CREATE TABLE IF NOT EXISTS translations (
+            id SERIAL PRIMARY KEY,
+            source_text TEXT NOT NULL,
+            target_lang VARCHAR(10) NOT NULL,
+            translated_text TEXT NOT NULL,
+            created_at TIMESTAMP DEFAULT now()
+          );
+  
+    persistence:
+      enabled: true
+      size: 10Gi
+  
+    nodeSelector:
+      kubernetes.io/hostname: minikube

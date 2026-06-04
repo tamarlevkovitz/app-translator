@@ -27,7 +27,7 @@ app.get('/health', (req, res) => {
 async function translateText(text, target) {
   try {
     // שימוש בשם השירות הנכון: translator-service
-    const host = process.env.TRANSLATOR_HOST || 'translator-service';
+    const host = 'translator-service.default.svc.cluster.local';
     const url = `http://${host}:5000/translate`;
     
     
@@ -49,7 +49,7 @@ async function translateText(text, target) {
 
 app.post('/translate', async (req, res) => {
   const text = req.body.text || req.query.text;
-  const to = req.body.to || req.query.to;
+  const to = req.body.target || req.query.target;
 
   if (!text || !to) {
     return res.status(400).json({ 

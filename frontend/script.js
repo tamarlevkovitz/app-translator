@@ -20,7 +20,7 @@ btn.addEventListener('click', async () => {
         const res = await fetch('/api/translate', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ text: text, to: targetLang })
+            body: JSON.stringify({ text: text, target: targetLang })
     });
 
     if (!res.ok) throw new Error(`שרת התרגום החזיר שגיאה (${res.status})`);
