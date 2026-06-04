@@ -15,7 +15,7 @@ spec:
       containers:
       - name: backend
         image: {{ .Values.backend.image }}
-        imagePullPolicy: Never
+        imagePullPolicy: Always
         ports:
         - containerPort: {{ .Values.backend.port }}
         env:
@@ -44,6 +44,18 @@ metadata:
 spec:
   selector:
     app: backend
+  ports:
+  - port: {{ .Values.backend.port }}
+    targetPort: {{ .Values.backend.port }}
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend  
+spec:
+  selector:
+    app: backend  
   ports:
   - port: {{ .Values.backend.port }}
     targetPort: {{ .Values.backend.port }}

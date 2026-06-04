@@ -2,7 +2,7 @@ global:
   domain: translator.local
 
 backend:
-  image: tamilevkovitz/image-backend
+  image: tamilevkovitz/image-backend:latest
   replicaCount: 2
   port: 3001
   env:
@@ -10,7 +10,7 @@ backend:
     translatorHost: "translator-service"
   
 frontend:
-  image: tamilevkovitz/frontend
+  image: tamilevkovitz/frontend:latest
   replicaCount: 2
   port: 80
 
@@ -42,11 +42,12 @@ ingress:
 
 volume:
   data:
-  init.sql: |
-    CREATE TABLE IF NOT EXISTS translations (
-      id SERIAL PRIMARY KEY,
-      source_text TEXT NOT NULL,
-      target_lang VARCHAR(10) NOT NULL,
-      translated_text TEXT NOT NULL,
-      created_at TIMESTAMP DEFAULT now()
-    );
+    init:
+      sql: |
+        CREATE TABLE IF NOT EXISTS translations (
+          id SERIAL PRIMARY KEY,
+          source_text TEXT NOT NULL,
+          target_lang VARCHAR(10) NOT NULL,
+          translated_text TEXT NOT NULL,
+          created_at TIMESTAMP DEFAULT now()
+        );
